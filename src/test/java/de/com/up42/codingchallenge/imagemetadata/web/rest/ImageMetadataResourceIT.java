@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.util.LinkedMultiValueMap;
 
@@ -54,7 +55,7 @@ public class ImageMetadataResourceIT extends AbstractBaseIntegrationTest {
         FeatureResponseDTO theFeatureFound;
         String[] pathVariablesArray = {"b3ac34e1-12e6-4dee-9e21-b717f472fcfd"};
 
-        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_BASE_FEATURES_BY_ID,
+        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_FEATURES_BY_ID,
                                                                   pathVariablesArray,
                                                                   new LinkedMultiValueMap<>());
 
@@ -76,11 +77,30 @@ public class ImageMetadataResourceIT extends AbstractBaseIntegrationTest {
         MockHttpServletResponse mockHttpServletResponse;
         String[] pathVariablesArray = {"b3ac34e1-12e6-4dee-9e21-NonExistentID"};
 
-        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_BASE_FEATURES_BY_ID,
+        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_FEATURES_BY_ID,
                                                                   pathVariablesArray,
                                                                   new LinkedMultiValueMap<>());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), mockHttpServletResponse.getStatus());
+
+    }
+
+    @Test
+    public void testShowQuicklookImageAsPNG() throws Exception {
+
+        MockHttpServletResponse mockHttpServletResponse;
+        FeatureResponseDTO theFeatureFound;
+        String[] pathVariablesArray = {"b3ac34e1-12e6-4dee-9e21-b717f472fcfd"};
+
+        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_SHOW_QUICKLOOK_IMAGE_AS_PNG,
+                                                                  pathVariablesArray,
+                                                                  new LinkedMultiValueMap<>());
+
+        assertEquals(HttpStatus.OK.value(), mockHttpServletResponse.getStatus());
+
+        assertEquals(MediaType.IMAGE_PNG_VALUE, mockHttpServletResponse.getContentType());
+
+        assertNotNull(mockHttpServletResponse.getContentAsByteArray());
 
     }
 

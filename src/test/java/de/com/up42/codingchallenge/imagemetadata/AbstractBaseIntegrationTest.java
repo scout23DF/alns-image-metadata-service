@@ -19,7 +19,8 @@ public abstract class AbstractBaseIntegrationTest {
     public static final String APP_ENDPOINT_ROOT = "/api";
     public static final String APP_ENDPOINT_VERSION = APP_ENDPOINT_ROOT + "";
     public static final String APP_ENDPOINT_BASE_FEATURES = APP_ENDPOINT_VERSION + "/features";
-    public static final String APP_ENDPOINT_BASE_FEATURES_BY_ID = APP_ENDPOINT_BASE_FEATURES + "/{id}";
+    public static final String APP_ENDPOINT_FEATURES_BY_ID = APP_ENDPOINT_BASE_FEATURES + "/{id}";
+    public static final String APP_ENDPOINT_SHOW_QUICKLOOK_IMAGE_AS_PNG = APP_ENDPOINT_FEATURES_BY_ID + "/quicklook";
 
 
     @Autowired

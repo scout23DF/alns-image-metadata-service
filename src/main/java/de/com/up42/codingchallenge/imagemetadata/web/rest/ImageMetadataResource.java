@@ -1,17 +1,21 @@
 package de.com.up42.codingchallenge.imagemetadata.web.rest;
 
+import de.com.up42.codingchallenge.imagemetadata.config.AppImgMetadataServiceProperties;
 import de.com.up42.codingchallenge.imagemetadata.models.enums.AppServiceOperationTypeEnum;
 import de.com.up42.codingchallenge.imagemetadata.services.ImageMetadataService;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.FeatureResponseDTO;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.ImageResponseDTO;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.SearchCriteriaRequestDTO;
+import de.com.up42.codingchallenge.imagemetadata.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,9 +24,12 @@ import java.util.Optional;
 @Slf4j
 public class ImageMetadataResource {
 
+    private final AppImgMetadataServiceProperties appImgMetadataServiceProperties;
     private final ImageMetadataService imageMetadataService;
 
-    public ImageMetadataResource(ImageMetadataService pImageMetadataService) {
+    public ImageMetadataResource(AppImgMetadataServiceProperties appImgMetadataServiceProperties,
+                                 ImageMetadataService pImageMetadataService) {
+        this.appImgMetadataServiceProperties = appImgMetadataServiceProperties;
         this.imageMetadataService = pImageMetadataService;
     }
 
@@ -55,17 +62,28 @@ public class ImageMetadataResource {
 
     }
 
-    @GetMapping("/{id}/quicklook")
-    public ResponseEntity<ImageResponseDTO> getQuicklookImageAsPNG(@PathVariable("id") String pId) {
+    @GetMapping(value = "/{id}/quicklook", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> showQuicklookImageAsPNG(@PathVariable("id") String pId) throws IOException {
+        Optional<byte[]> optImageAsByteArray = Optional.empty();
+        Optional<ImageResponseDTO> optImageFound = Optional.empty();
 
         SearchCriteriaRequestDTO searchDTO = SearchCriteriaRequestDTO.builder()
                                                                     .appServiceOperationType(AppServiceOperationTypeEnum.GET_IMAGE_AS_PNG)
                                                                     .id(pId)
                                                                     .build();
 
-        Optional<ImageResponseDTO> optImageFound = this.imageMetadataService.searchQuicklookImageByCriteria(searchDTO);
+        optImageFound = this.imageMetadataService.searchQuicklookImageByCriteria(searchDTO);
 
-        return ResponseEntity.of(optImageFound);
+        if (optImageFound.isPresent()) {
+
+            if (appImgMetadataServiceProperties.isGenerateEasterEggEnabled()) {
+                optImageAsByteArray = Optional.ofNullable(ImageUtils.generateEasterEgg(optImageFound.get().getQuickLookImageAsByteArray()));
+            } else {
+                optImageAsByteArray = Optional.ofNullable(optImageFound.get().getQuickLookImageAsByteArray());
+            }
+        }
+
+        return ResponseEntity.of(optImageAsByteArray);
 
     }
 

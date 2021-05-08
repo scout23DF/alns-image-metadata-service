@@ -23,4 +23,7 @@ public class AppImgMetadataServiceProperties {
     private String swaggerPageAPIVersion;
 
     private String sourceDataFilename;
+
+    public boolean generateEasterEggEnabled;
+
 }
