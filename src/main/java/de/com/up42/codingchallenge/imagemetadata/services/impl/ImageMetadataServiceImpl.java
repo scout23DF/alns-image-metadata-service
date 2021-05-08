@@ -2,6 +2,7 @@ package de.com.up42.codingchallenge.imagemetadata.services.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.com.up42.codingchallenge.imagemetadata.exceptions.ApplicationGenericServiceException;
+import de.com.up42.codingchallenge.imagemetadata.exceptions.FeatureNotFoundException;
 import de.com.up42.codingchallenge.imagemetadata.models.generated.Feature;
 import de.com.up42.codingchallenge.imagemetadata.repositories.ImageMetadataRepository;
 import de.com.up42.codingchallenge.imagemetadata.services.ImageMetadataService;
@@ -53,7 +54,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
     }
 
     @Override
-    public Optional<FeatureResponseDTO> searchOneFeatureByCriteria(SearchCriteriaRequestDTO<String> searchDTO) {
+    public Optional<FeatureResponseDTO> searchOneFeatureByCriteria(SearchCriteriaRequestDTO<String> searchDTO) throws FeatureNotFoundException {
         AtomicReference<Optional<FeatureResponseDTO>> optionalFeatureResponseDTO = new AtomicReference<>(Optional.empty());
 
         try {
@@ -62,7 +63,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             this.imageMetadataRepository.findOneFeatureById(searchDTO.getId())
                                         .ifPresentOrElse(
                     theFeatureFound -> optionalFeatureResponseDTO.set(Optional.of(featureMapper.toDTO(theFeatureFound))),
-                    () -> log.debug("Feature Not Found - Id :: {}", searchDTO.getId())
+                    () -> {throw new FeatureNotFoundException(searchDTO.getId());}
             );
 
         } catch (JsonProcessingException e) {
@@ -94,6 +95,10 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
                                                                   .quickLookImageAsBase64(featureFound.getProperties().getQuicklook())
                                                                   .build()
                                                  );
+
+            } else {
+
+                throw new FeatureNotFoundException(searchDTO.getId());
 
             }
 

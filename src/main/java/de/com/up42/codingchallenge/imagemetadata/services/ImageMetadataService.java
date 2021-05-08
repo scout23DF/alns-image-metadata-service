@@ -1,5 +1,6 @@
 package de.com.up42.codingchallenge.imagemetadata.services;
 
+import de.com.up42.codingchallenge.imagemetadata.exceptions.FeatureNotFoundException;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.FeatureResponseDTO;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.ImageResponseDTO;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.SearchCriteriaRequestDTO;
@@ -13,7 +14,7 @@ public interface ImageMetadataService {
 
     Optional<List<FeatureResponseDTO>> searchFeaturesByCriteria(@Valid @NotNull SearchCriteriaRequestDTO<String> searchDTO);
 
-    Optional<FeatureResponseDTO> searchOneFeatureByCriteria(SearchCriteriaRequestDTO<String> searchDTO);
+    Optional<FeatureResponseDTO> searchOneFeatureByCriteria(SearchCriteriaRequestDTO<String> searchDTO) throws FeatureNotFoundException;
 
     Optional<ImageResponseDTO> searchQuicklookImageByCriteria(@Valid @NotNull SearchCriteriaRequestDTO<String> searchDTO);
 

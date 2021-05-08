@@ -5,4 +5,9 @@ public class ApplicationGenericServiceException extends RuntimeException {
     public ApplicationGenericServiceException(Throwable exception) {
         super(exception);
     }
+
+    public ApplicationGenericServiceException(String exceptionMsg) {
+        super(exceptionMsg);
+    }
+
 }

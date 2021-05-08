@@ -62,7 +62,7 @@ public class ImageMetadataResource {
 
     }
 
-    @GetMapping(value = "/{id}/quicklook", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/{id}/quicklook", produces = {MediaType.IMAGE_PNG_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<byte[]> showQuicklookImageAsPNG(@PathVariable("id") String pId) throws IOException {
         Optional<byte[]> optImageAsByteArray = Optional.empty();
         Optional<ImageResponseDTO> optImageFound = Optional.empty();

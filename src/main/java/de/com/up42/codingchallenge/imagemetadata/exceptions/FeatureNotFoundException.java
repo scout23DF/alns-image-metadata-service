@@ -1,8 +1,8 @@
 package de.com.up42.codingchallenge.imagemetadata.exceptions;
 
-public class FeatureNotFoundException extends RuntimeException {
+public class FeatureNotFoundException extends ApplicationGenericServiceException {
 
-    public FeatureNotFoundException(Long id) {
-        super("Could not find staff member with ID " + id);
+    public FeatureNotFoundException(String id) {
+        super("Feature Not Found - Id :: [" + id + "]");
     }
 }

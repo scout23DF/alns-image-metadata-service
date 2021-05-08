@@ -4,6 +4,7 @@ import de.com.up42.codingchallenge.imagemetadata.AbstractBaseIntegrationTest;
 import de.com.up42.codingchallenge.imagemetadata.IntegrationTest;
 import de.com.up42.codingchallenge.imagemetadata.config.AppImgMetadataServiceProperties;
 import de.com.up42.codingchallenge.imagemetadata.services.dtos.FeatureResponseDTO;
+import de.com.up42.codingchallenge.imagemetadata.web.errorhandling.APIMessageErrorDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,12 +77,22 @@ public class ImageMetadataResourceIT extends AbstractBaseIntegrationTest {
 
         MockHttpServletResponse mockHttpServletResponse;
         String[] pathVariablesArray = {"b3ac34e1-12e6-4dee-9e21-NonExistentID"};
+        APIMessageErrorDTO apiMessageErrorDTO;
 
         mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_FEATURES_BY_ID,
                                                                   pathVariablesArray,
                                                                   new LinkedMultiValueMap<>());
 
         assertEquals(HttpStatus.NOT_FOUND.value(), mockHttpServletResponse.getStatus());
+
+        assertNotNull(mockHttpServletResponse.getContentAsByteArray());
+
+        apiMessageErrorDTO = this.jacksonObjectMapper.readValue(mockHttpServletResponse.getContentAsByteArray(),
+                                                                APIMessageErrorDTO.class);
+
+        assertNotNull(apiMessageErrorDTO);
+        assertEquals("404 NOT_FOUND", apiMessageErrorDTO.getStatus().toString());
+
 
     }
 
