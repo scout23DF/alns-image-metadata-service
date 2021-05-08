@@ -49,11 +49,9 @@ public class ImageMetadataResource {
                                                                      .id(pId)
                                                                      .build();
 
-        FeatureResponseDTO featureFound = this.imageMetadataService.searchFeaturesByCriteria(searchDTO)
-                                                                   .get()
-                                                                   .get(0);
+        Optional<FeatureResponseDTO> optFeatureFound = this.imageMetadataService.searchOneFeatureByCriteria(searchDTO);
 
-        return ResponseEntity.ok(featureFound);
+        return ResponseEntity.of(optFeatureFound);
 
     }
 

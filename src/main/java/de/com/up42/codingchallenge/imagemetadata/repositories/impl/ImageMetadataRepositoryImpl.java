@@ -9,8 +9,11 @@ import de.com.up42.codingchallenge.imagemetadata.repositories.ImageMetadataRepos
 import de.com.up42.codingchallenge.imagemetadata.utils.FileIOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
@@ -37,6 +40,21 @@ public class ImageMetadataRepositoryImpl implements ImageMetadataRepository {
                                                    .stream()
                                                    .flatMap(oneFeature -> Stream.ofNullable(oneFeature));
 
+    }
+
+    @Override
+    public Optional<Feature> findOneFeatureById(String id) throws JsonProcessingException {
+
+        Optional<Feature> optResult = Optional.empty();
+
+        List<Feature> resultList = findAllFeatures().filter(oneFeature -> oneFeature.getProperties().getId().equalsIgnoreCase(id))
+                                                    .collect(Collectors.toList());
+
+        if (!CollectionUtils.isEmpty(resultList)) {
+            optResult = Optional.of(resultList.get(0));
+        }
+
+        return optResult;
     }
 
     private ImagesMetadataLoadedFromJSONFile getOrLoadImageMetadataFromJSONFile() throws JsonProcessingException {

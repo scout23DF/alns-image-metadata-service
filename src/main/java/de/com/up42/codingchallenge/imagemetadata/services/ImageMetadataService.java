@@ -11,8 +11,10 @@ import java.util.Optional;
 
 public interface ImageMetadataService {
 
-    Optional<List<FeatureResponseDTO>> searchFeaturesByCriteria(@Valid @NotNull SearchCriteriaRequestDTO searchDTO);
+    Optional<List<FeatureResponseDTO>> searchFeaturesByCriteria(@Valid @NotNull SearchCriteriaRequestDTO<String> searchDTO);
 
-    Optional<ImageResponseDTO> searchQuicklookImageByCriteria(@Valid @NotNull SearchCriteriaRequestDTO searchDTO);
+    Optional<FeatureResponseDTO> searchOneFeatureByCriteria(SearchCriteriaRequestDTO<String> searchDTO);
+
+    Optional<ImageResponseDTO> searchQuicklookImageByCriteria(@Valid @NotNull SearchCriteriaRequestDTO<String> searchDTO);
 
 }
