@@ -3,8 +3,17 @@ package de.com.up42.codingchallenge.imagemetadata.web.rest;
 import de.com.up42.codingchallenge.imagemetadata.AbstractBaseIntegrationTest;
 import de.com.up42.codingchallenge.imagemetadata.IntegrationTest;
 import de.com.up42.codingchallenge.imagemetadata.config.AppImgMetadataServiceProperties;
+import de.com.up42.codingchallenge.imagemetadata.services.dtos.FeatureResponseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.util.LinkedMultiValueMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @IntegrationTest
 @Slf4j
@@ -14,37 +23,26 @@ public class ImageMetadataResourceIT extends AbstractBaseIntegrationTest {
     private AppImgMetadataServiceProperties appKitchenServiceProperties;
 
 
-    /*
     @Test
-    public void testPlanWeekFromRequestDTO() throws Exception {
+    public void testSearchAllFeaturesEndpoint() throws Exception {
 
-        WeekPlanRequestDTO weekPlanRequestDTO = null;
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         MockHttpServletResponse mockHttpServletResponse;
-        List<DayOfService> dayOfServiceList;
-        Integer numberOfWeeksAllowedInPlanning = appKitchenServiceProperties.getNumberOfWeeksAllowedInPlanning();
+        List<FeatureResponseDTO> featuresFoundList;
 
-        weekPlanRequestDTO = new WeekPlanRequestDTO();
-        weekPlanRequestDTO.setReferenceDate(DateTimeUtils.convertDateToString((new Date()), "yyyy-MM-dd"));
-        weekPlanRequestDTO.setQtyWeeksAheadToPlan(numberOfWeeksAllowedInPlanning);
-        weekPlanRequestDTO.setShouldConsiderVacationDays(Boolean.TRUE);
-        weekPlanRequestDTO.setShouldRegenerateAllDays(Boolean.TRUE);
-
-        mockHttpServletResponse = this.performMockMVCOperationPost(AbstractBaseIntegrationTest.APP_ENDPOINT_BASE_WEEKPLANS,
-                                                                   new String[1],
-                                                                   weekPlanRequestDTO,
-                                                                   new LinkedMultiValueMap<>());
+        mockHttpServletResponse = this.performMockMVCOperationGet(AbstractBaseIntegrationTest.APP_ENDPOINT_BASE_FEATURES,
+                                                                  new String[1],
+                                                                  new LinkedMultiValueMap<>());
 
         Assertions.assertEquals(HttpStatus.OK.value(), mockHttpServletResponse.getStatus());
 
         Assertions.assertNotNull(mockHttpServletResponse.getContentAsByteArray());
 
-        dayOfServiceList = this.jacksonObjectMapper.readValue(mockHttpServletResponse.getContentAsByteArray(),
-                                                              ArrayList.class);
+        featuresFoundList = this.jacksonObjectMapper.readValue(mockHttpServletResponse.getContentAsByteArray(),
+                                                               ArrayList.class);
 
-        Assertions.assertNotNull(dayOfServiceList);
-        Assertions.assertTrue(dayOfServiceList.size() == (numberOfWeeksAllowedInPlanning * 5));
+        Assertions.assertNotNull(featuresFoundList);
+        Assertions.assertTrue(featuresFoundList.size() == 14);
 
     }
-    */
+
 }

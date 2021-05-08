@@ -29,6 +29,8 @@ public class ImageMetadataResource {
     @GetMapping
     public ResponseEntity<List<FeatureResponseDTO>> listAllFeatures() {
 
+        log.debug("Listing All FeatureResponseDTO's. ");
+
         SearchCriteriaRequestDTO searchDTO = SearchCriteriaRequestDTO.builder()
                                                                      .appServiceOperationType(AppServiceOperationTypeEnum.SEARCH_ALL_FEATURES)
                                                                      .build();

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.StringUtils;
 
 import java.net.InetAddress;
@@ -13,7 +12,6 @@ import java.net.UnknownHostException;
 import java.util.Optional;
 
 @SpringBootApplication
-@EnableScheduling
 public class Up42ImageMetadataServiceApplication {
 
     private static final Logger log = LoggerFactory.getLogger(Up42ImageMetadataServiceApplication.class);

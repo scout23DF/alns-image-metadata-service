@@ -1,46 +1,60 @@
 package de.com.up42.codingchallenge.imagemetadata.repositories.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.com.up42.codingchallenge.imagemetadata.config.AppImgMetadataServiceProperties;
+import de.com.up42.codingchallenge.imagemetadata.models.generated.Feature;
+import de.com.up42.codingchallenge.imagemetadata.models.generated.ImageMetadata;
 import de.com.up42.codingchallenge.imagemetadata.repositories.ImageMetadataRepository;
+import de.com.up42.codingchallenge.imagemetadata.utils.FileIOUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Repository
+@Slf4j
 public class ImageMetadataRepositoryImpl implements ImageMetadataRepository {
 
-    // private final DatabaseClient databaseClient;
+    private static ImagesMetadataLoadedFromJSONFile imagesMetadataLoadedFromJSONFile;
 
-    private static final String SQL_ROYALTIES_ASSETS_BY_AUTHOR =
-         "select" +
-           " year(article.DT_PUBLISHING)                 as referenceYear, " +
-           " monthname(article.DT_PUBLISHING)            as referenceMonth, " +
-         //  " year(refasset.DT_REFERENCE_START)           as referenceYear, " +
-         //  " monthname(refasset.DT_REFERENCE_START)      as referenceMonth, " +
-           " author.ID                                   as authorId, " +
-           " author.DS_NAME                              as authorName, " +
-           " count(asset.DS_URL)                         as amountOfAssetsReferencedInPublishedArticles, " +
-           " sum(asset.VL_PUBLISHING_PRICE)              as totalRoyaltiesValue " +
-          "from " +
-           "   TB_AUTHOR author " +
-           "       inner join TB_ASSET asset on asset.AUTHOR_ID = author.ID " +
-           "       inner join TB_REFERENCED_ASSET refasset on refasset.ASSET_URL = asset.DS_URL " +
-           "       inner join TB_NEWS_ARTICLE article on article.ID = refasset.ARTICLE_ID " +
-          "where 1 = 1 " +
-          "  and article.IS_PUBLISHED = TRUE " +
-          "  and article.DT_PUBLISHING <= current_timestamp() " +
-         // "   and refasset.DT_REFERENCE_START <= current_timestamp() " +
-         "group by " +
-         "  referenceYear, " +
-         "  referenceMonth, " +
-         "  authorId, " +
-         "  authorName " +
-         "order by " +
-         "  referenceYear, " +
-         "  referenceMonth, " +
-         "  authorName ";
+    private final ObjectMapper jacksonObjectMapper;
+    private final AppImgMetadataServiceProperties appImgMetadataServiceProperties;
 
-    public ImageMetadataRepositoryImpl() {
+    public ImageMetadataRepositoryImpl(ObjectMapper jacksonObjectMapper,
+                                       AppImgMetadataServiceProperties appImgMetadataServiceProperties) {
+        this.jacksonObjectMapper = jacksonObjectMapper;
+        this.appImgMetadataServiceProperties = appImgMetadataServiceProperties;
+    }
 
+    @Override
+    public Stream<Feature> findAllFeatures() throws JsonProcessingException {
+
+        log.debug("Finding all Features.");
+
+        return getOrLoadImageMetadataFromJSONFile().getAllFeaturesFlattenedList()
+                                                   .stream()
+                                                   .flatMap(oneFeature -> Stream.ofNullable(oneFeature));
+
+    }
+
+    private ImagesMetadataLoadedFromJSONFile getOrLoadImageMetadataFromJSONFile() throws JsonProcessingException {
+
+        if (imagesMetadataLoadedFromJSONFile == null) {
+
+            String jsonFileAsString = FileIOUtils.getResourceFileAsString(this.appImgMetadataServiceProperties.getSourceDataFilename());
+
+            List<ImageMetadata> tmpList = List.of(this.jacksonObjectMapper.readValue(jsonFileAsString,
+                                                                                     ImageMetadata[].class));
+
+            imagesMetadataLoadedFromJSONFile = ImagesMetadataLoadedFromJSONFile.builder()
+                                                                               .imagesMetadataLoadedList(tmpList)
+                                                                               .build();
 
         }
 
+        return imagesMetadataLoadedFromJSONFile;
+    }
 
 }

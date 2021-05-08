@@ -20,15 +20,11 @@
     <properties>
         <java.version>11</java.version>
         <spring-boot.version>2.4.4</spring-boot.version>
-        <hibernate.version>5.4.29.Final</hibernate.version>
         <hibernate-validator.version>6.0.9.Final</hibernate-validator.version>
         <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <springfox.version>3.0.0</springfox.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <blockhound-junit-platform.version>1.0.4.RELEASE</blockhound-junit-platform.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <bootstrap.version>4.2.1</bootstrap.version>
-        <jib-maven-plugin></jib-maven-plugin>
     </properties>
 
 
@@ -84,6 +80,11 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.5.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-webmvc-core</artifactId>
             <version>1.5.8</version>
             <!-- <version>last-release-version</version> -->
@@ -99,7 +100,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.2</version>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -131,15 +136,29 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.12</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${spring-boot.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

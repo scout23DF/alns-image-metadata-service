@@ -22,4 +22,5 @@ public class AppImgMetadataServiceProperties {
     private String swaggerPageTermsOfService;
     private String swaggerPageAPIVersion;
 
+    private String sourceDataFilename;
 }
