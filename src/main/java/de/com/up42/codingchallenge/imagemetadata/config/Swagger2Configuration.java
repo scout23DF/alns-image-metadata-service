@@ -42,7 +42,7 @@ public class Swagger2Configuration implements WebMvcConfigurer {
         String paths[] = {"/api/**"};
         String packagesToscan[] = {"de.com.up42.codingchallenge.imagemetadata"};
         return GroupedOpenApi.builder()
-                .group("MediaService-ReactiveMS API's")
+                .group("UP42-ImageMetadataService-API's")
                 .pathsToMatch(paths)
                 .packagesToScan(packagesToscan)
                 .build();
